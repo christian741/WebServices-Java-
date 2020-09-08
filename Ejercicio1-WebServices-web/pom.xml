@@ -2,10 +2,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-    <artifactId>Ejercicio1-WebServices</artifactId>
-    <groupId>udec.edu.co</groupId>
-    <version>1.0-SNAPSHOT</version>
-  </parent>
+        <artifactId>Ejercicio1-WebServices</artifactId>
+        <groupId>udec.edu.co</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
 
     <groupId>udec.edu.co</groupId>
     <artifactId>Ejercicio1-WebServices-web</artifactId>
@@ -24,10 +24,16 @@
             <groupId>javax</groupId>
             <artifactId>javaee-web-api</artifactId>
             <version>7.0</version>
-            <scope>provided</scope>
+            <type>jar</type>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-json</artifactId>
+            <version>1.18.1</version>
         </dependency>
     </dependencies>
-
+    
     <build>
         <plugins>
             <plugin>

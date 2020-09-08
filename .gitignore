@@ -21,3 +21,6 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+/Ejercicio1-WebServices-web/target/
+/Ejercicio1-WebServices-ejb/target/
+/Ejercicio1-WebServices-ear/target/
