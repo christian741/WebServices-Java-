@@ -5,6 +5,7 @@
  */
 package udec.edu.co.Controller;
 
+import io.swagger.annotations.Api;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +30,10 @@ import udec.edu.co.Pojo.Profesor;
  */
 @Stateless
 @Path("/profesores")
+@Api(value = "Profesores Service", description = "REST Endpoints for User Service")
 public class ProfesorController {
 
+    
     @Path("/insertar")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
