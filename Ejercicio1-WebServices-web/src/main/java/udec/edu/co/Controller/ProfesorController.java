@@ -5,7 +5,6 @@
  */
 package udec.edu.co.Controller;
 
-import io.swagger.annotations.Api;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +20,13 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+
 import udec.edu.co.Logica.ProfesorService;
 import udec.edu.co.Pojo.Profesor;
 
@@ -30,10 +36,9 @@ import udec.edu.co.Pojo.Profesor;
  */
 @Stateless
 @Path("/profesores")
-@Api(value = "Profesores Service", description = "REST Endpoints for User Service")
+
 public class ProfesorController {
 
-    
     @Path("/insertar")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
@@ -47,10 +52,27 @@ public class ProfesorController {
         //base datos 500
     }
 
+    @GET
+    @Path("/obtenerTodosProfesores")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Profesor> getAllUsers() {
+        List<Profesor> users = new ArrayList<>();
+        Profesor user1 = new Profesor(123123, "Chrstian", "Diaz", 23);
+        Profesor user2 = new Profesor(2334344, "Daniela", "Vargas", 23);
+        Profesor user3 = new Profesor(8766, "sadsda", "qweqew", 23);
+
+        users.add(user1);
+        users.add(user2);
+        users.add(user3);
+
+        return users;
+    }
+
     @Path("/editar")
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
+
     public Response editar(Profesor profesor) {
         System.out.println(profesor.getCedula() + " " + profesor.getNombre());
         ProfesorService service = new ProfesorService();
@@ -60,6 +82,9 @@ public class ProfesorController {
 
     @Path("/retornarPorCedula/{cedula}")
     @GET
+    @APIResponse(description = "Book",
+             content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = Profesor.class)))
     @Produces(MediaType.APPLICATION_JSON)
     public Response retornarProfesorPorCedula(@PathParam("cedula") long cedula) {
 
@@ -69,22 +94,25 @@ public class ProfesorController {
         //filtros vacio no encontrado 404 no content
         // 400 validaciones en solicitudes mal hechas
     }
-    
+
     @Path("/retornarMateria/{materia}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response retornarProfesorPorMateria(@PathParam("materia") String materia) {
 
         ProfesorService service = new ProfesorService();
-         System.out.println(materia);
+        System.out.println(materia);
         ArrayList<Profesor> lista = service.buscarProfesoresMateria(materia);
         return Response.status(Response.Status.OK).entity(lista).build();
         //filtros vacio no encontrado 404 no content
 
     }
-    
+
     @Path("/retornarTodos")
     @GET
+    @Operation(summary = "Get all books", description = "Returns all available books of the book store XYZ")
+    @APIResponse(responseCode = "404", description = "No books found")
+    @Tag(name = "BETA", description = "This API is currently in beta state")
     @Produces(MediaType.APPLICATION_JSON)
     public Response retornarProfesorPorCedula() {
 
@@ -94,8 +122,7 @@ public class ProfesorController {
         // vacia 204 no content
 
     }
-    
-    
+
     @Path("eliminar/{cedula}")
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
@@ -107,9 +134,5 @@ public class ProfesorController {
         //204 no content
         //404 not found
     }
-
-   
-    
-    
 
 }
