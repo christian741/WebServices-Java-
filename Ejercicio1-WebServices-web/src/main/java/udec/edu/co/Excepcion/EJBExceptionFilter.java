@@ -5,7 +5,7 @@
  */
 package udec.edu.co.Excepcion;
 
-import java.sql.Date;
+import javax.ejb.EJBException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
@@ -16,12 +16,13 @@ import udec.edu.co.Pojo.ErrorWraper;
  * @author Christian
  */
 @Provider
-public class NulPointerExcepcionFilter implements ExceptionMapper<NullPointerException>{
+public class EJBExceptionFilter implements ExceptionMapper<EJBException>{
 
     @Override
-    public Response toResponse(NullPointerException exception) {
-       ErrorWraper error = new ErrorWraper(exception.getMessage(),"500" , "INTERNAL_SERVER_ERROR");
-       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(error).build();
+    public Response toResponse(EJBException exception) {
+        ErrorWraper error = new ErrorWraper(exception.getMessage(),"415" , "UNSUPPORTED_MEDIA_TYPE");
+       return Response.status(Response.Status.UNSUPPORTED_MEDIA_TYPE).entity(error).build();
     }
+    
     
 }

@@ -20,6 +20,10 @@ public class ErrorWraper implements Serializable{
     private String nombreCodigo;
     private Instant Timestamp;
 
+    public ErrorWraper() {
+    }
+    
+
     public ErrorWraper(String error, String codigo, String nombreCodigo) {
         this.error = error;
         this.codigo = codigo;

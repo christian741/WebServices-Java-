@@ -5,7 +5,7 @@
  */
 package udec.edu.co.Excepcion;
 
-import java.sql.Date;
+import java.io.IOException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
@@ -16,12 +16,11 @@ import udec.edu.co.Pojo.ErrorWraper;
  * @author Christian
  */
 @Provider
-public class NulPointerExcepcionFilter implements ExceptionMapper<NullPointerException>{
-
+public class IOExceptionFilter implements ExceptionMapper<IOException>{
+    
     @Override
-    public Response toResponse(NullPointerException exception) {
-       ErrorWraper error = new ErrorWraper(exception.getMessage(),"500" , "INTERNAL_SERVER_ERROR");
+    public Response toResponse(IOException exception) {
+        ErrorWraper error = new ErrorWraper(exception.getMessage(),"500" , "INTERNAL_SERVER_ERROR");
        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(error).build();
     }
-    
 }

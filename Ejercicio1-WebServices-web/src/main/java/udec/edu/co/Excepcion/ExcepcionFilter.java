@@ -18,10 +18,16 @@ import udec.edu.co.Pojo.ErrorWraper;
 @Provider
 public class ExcepcionFilter implements ExceptionMapper<Exception>{
 
+    private String error415 ="HTTP 415 Unsupported Media Type";
     @Override
     public Response toResponse(Exception exception) {
        ErrorWraper error = new ErrorWraper(exception.getMessage(),"500" , "INTERNAL_SERVER_ERROR");
-       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        System.out.println(exception);
+       if(this.error415.equals(exception.getMessage())){
+            error = new ErrorWraper(exception.getMessage(),"415" , "Unsupported Media Type");
+            return Response.status(Response.Status.UNSUPPORTED_MEDIA_TYPE).entity(error).build();
+       }
+       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(error).build();
     }
     
     

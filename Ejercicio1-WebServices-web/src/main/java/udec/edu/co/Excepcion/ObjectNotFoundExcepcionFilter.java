@@ -21,7 +21,7 @@ public class ObjectNotFoundExcepcionFilter implements ExceptionMapper<ObjectNotF
     @Override
     public Response toResponse(ObjectNotFoundException exception) {
        ErrorWraper error = new ErrorWraper(exception.getMessage(),"404" , "NOT_FOUND");
-       return Response.status(Response.Status.NOT_FOUND).build();
+       return Response.status(Response.Status.NOT_FOUND).entity(error).build();
     }
     
 }

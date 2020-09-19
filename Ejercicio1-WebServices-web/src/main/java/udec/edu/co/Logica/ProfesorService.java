@@ -7,6 +7,7 @@ package udec.edu.co.Logica;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -21,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.ejb.ObjectNotFoundException;
+import udec.edu.co.Pojo.ErrorWraper;
 import udec.edu.co.Pojo.Profesor;
 
 /**
@@ -32,55 +35,107 @@ public class ProfesorService {
     private String ruta = "C:/Users/Christian/Desktop/fichero.dat";
     private File fichero = new File(ruta);
 
-    public void insertarProfesor(ArrayList<Profesor> profesor) {
-        //Profesor maestro = new Profesor(profesor.getCedula(), profesor.getNombre(), profesor.getApellido(), profesor.getEdad());
+    public ErrorWraper insertarProfesor(ArrayList<Profesor> profesor) throws ObjectNotFoundException, NullPointerException, Exception {
 
-        try {
-            // A partir del objeto File creamos el fichero físicamente
-            if (fichero.createNewFile()) {
-                System.out.println("El fichero se ha creado correctamente");
-            } else {
-                System.out.println("No ha podido ser creado el fichero");
+        boolean validacion = true;
+        //devuelve todos
+        if (fichero.exists()) {
+            System.out.println("si existe---------------------------");
+            ArrayList<Profesor> busqueda = retornarProfesores();
+            //no mas de 10 objetos
+            if (profesor.size() > 10) {
+                throw new NullPointerException("Mas de 10 objetos insertados");
             }
 
-            if (fichero.exists()) {
-
-                ArrayList<Profesor> arrayProfesores = new ArrayList<>();
-
-                try {
-                    //ObjectInputStream leyendoFichero = new ObjectInputStream(new FileInputStream(ruta));
-                    InputStream file = new FileInputStream(ruta);
-                    InputStream buffer = new BufferedInputStream(file);
-                    ObjectInput input = new ObjectInputStream(buffer);
-
-                    try {
-
-                        arrayProfesores = (ArrayList<Profesor>) input.readObject();
-
-                        if (arrayProfesores != null) {
-                            for (Profesor arrayProfesore : arrayProfesores) {
-                                profesor.add(arrayProfesore);
-                            }
-
-                        }
-                    } catch (ClassNotFoundException ex) {
-                        System.out.println("error al buscar en ex");
+            for (int i = 0; i < busqueda.size(); i++) {
+                for (int j = 0; j < profesor.size(); j++) {
+                    if (busqueda.get(i).getCedula() == profesor.get(j).getCedula()) {
+                        validacion = false;
                     }
-                    input.close();
-                } catch (IOException ex) {
-                    System.out.println("error" + ex);
+                }
+            }
+        } else {
+            validacion = true;
+        }
+        if (validacion == false) {
+            throw new NullPointerException("Error hay una cedula repetida");
+        } else {
+            try {
+                // A partir del objeto File creamos el fichero físicamente
+                if (fichero.createNewFile()) {
+                    System.out.println("El fichero se ha creado correctamente");
+                } else {
+                    System.out.println("No ha podido ser creado el fichero");
                 }
 
-                OutputStream file = new FileOutputStream(ruta);
-                OutputStream buffer = new BufferedOutputStream(file);
-                ObjectOutput output = new ObjectOutputStream(buffer);
-                //ObjectOutputStream escribirFichero = new ObjectOutputStream(new FileOutputStream(ruta));
-                output.writeObject(profesor);
-                output.close();
+                if (fichero.exists()) {
+
+                    ArrayList<Profesor> arrayProfesores = new ArrayList<>();
+
+                    try {
+                        //ObjectInputStream leyendoFichero = new ObjectInputStream(new FileInputStream(ruta));
+                        InputStream file = new FileInputStream(ruta);
+                        InputStream buffer = new BufferedInputStream(file);
+                        if (file.read() == 0) {
+                            ObjectInput input = new ObjectInputStream(buffer);
+
+                            try {
+                                System.out.println("aqui llegue2");
+                                arrayProfesores = (ArrayList<Profesor>) input.readObject();
+                                System.out.println("aqui llegue3");
+                                if (arrayProfesores != null) {
+                                    for (Profesor arrayProfesore : arrayProfesores) {
+                                        profesor.add(arrayProfesore);
+                                    }
+
+                                }
+                                input.close();
+                            } catch (ClassNotFoundException ex) {
+                                System.out.println(ex);
+                                throw new ClassNotFoundException(ex + "Error no se encontro clase en el archivo");
+                            }
+                        } else {
+                            ObjectInput input = new ObjectInputStream(new FileInputStream(fichero));
+
+                            try {
+                                
+                                arrayProfesores = (ArrayList<Profesor>) input.readObject();
+                               
+                                if (arrayProfesores != null) {
+                                    for (Profesor arrayProfesore : arrayProfesores) {
+                                        profesor.add(arrayProfesore);
+                                    }
+
+                                }
+                                input.close();
+                            } catch (ClassNotFoundException ex) {
+                                System.out.println(ex);
+                                throw new ClassNotFoundException(ex + "Error no se encontro clase en el archivo");
+                            }
+                        }
+
+                    } catch (EOFException ex) {
+                        System.out.println(ex);
+                        throw new EOFException(ex + "No se cual es etsa expcecion");
+                    } catch (IOException ex) {
+                        System.out.println(ex);
+                        throw new IOException(ex + "Error en reocrrido de archivo");
+                    }
+
+                    OutputStream file = new FileOutputStream(ruta);
+                    OutputStream buffer = new BufferedOutputStream(file);
+                    ObjectOutput output = new ObjectOutputStream(buffer);
+                    //ObjectOutputStream escribirFichero = new ObjectOutputStream(new FileOutputStream(ruta));
+                    output.writeObject(profesor);
+                    output.close();
+                    //return new ErrorWraper("Creado Satisfactoriamente", "201", "Created");
+                }
+            } catch (IOException ex) {
+                System.out.println(ex);
+                throw new IOException(ex + "Error en crear el archivo");
             }
-        } catch (IOException ioe) {
-            System.out.println(ioe);
         }
+        return new ErrorWraper("Creado Satisfactoriamente", "201", "Created");
     }
 
     public void editarProfesor(Profesor profesor) {

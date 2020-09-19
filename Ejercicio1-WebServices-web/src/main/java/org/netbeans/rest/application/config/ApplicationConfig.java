@@ -30,7 +30,12 @@ public class ApplicationConfig extends Application {
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
         resources.add(udec.edu.co.Controller.ProfesorController.class);
+        resources.add(udec.edu.co.Excepcion.ClassNotFoundExceptionFilter.class);
+        resources.add(udec.edu.co.Excepcion.EJBExceptionFilter.class);
+        resources.add(udec.edu.co.Excepcion.EOFExceptionFilter.class);
         resources.add(udec.edu.co.Excepcion.ExcepcionFilter.class);
+        resources.add(udec.edu.co.Excepcion.IOExceptionFilter.class);
+        resources.add(udec.edu.co.Excepcion.IllegalArgumentExceptionFilter.class);
         resources.add(udec.edu.co.Excepcion.NulPointerExcepcionFilter.class);
         resources.add(udec.edu.co.Excepcion.ObjectNotFoundExcepcionFilter.class);
     }

@@ -8,6 +8,7 @@ package udec.edu.co.Controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.ejb.ObjectNotFoundException;
 import javax.ejb.Stateless;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
@@ -21,6 +22,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import udec.edu.co.Logica.ProfesorService;
+import udec.edu.co.Pojo.ErrorWraper;
 import udec.edu.co.Pojo.Profesor;
 
 /**
@@ -35,10 +37,10 @@ public class ProfesorController {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response insertarProfesor(ArrayList<Profesor> profesor) throws IOException {
+    public Response insertarProfesor(ArrayList<Profesor> profesor) throws IOException, ObjectNotFoundException, Exception {
         ProfesorService service = new ProfesorService();
-        service.insertarProfesor(profesor);
-        return Response.status(Response.Status.CREATED).build();
+        ErrorWraper mensaje = service.insertarProfesor(profesor);
+        return Response.status(Response.Status.CREATED).entity(mensaje).build();
         //201 create si esta bien
         //mal 404
         //base datos 500
