@@ -42,12 +42,7 @@
        
         <!-- Documentacion-->
         
-        <!-- https://mvnrepository.com/artifact/org.eclipse.microprofile.openapi/microprofile-openapi-api -->
-        <dependency>
-            <groupId>org.eclipse.microprofile.openapi</groupId>
-            <artifactId>microprofile-openapi-api</artifactId>
-            <version>2.0-MR1</version>
-        </dependency>
+       
         
         <!-- end Documentacion -->
         
@@ -125,7 +120,7 @@
                     </execution>
                 </executions>
             </plugin>
-            <!-- Documentacion  -->
+            <!-- Documentacion 
             
             <plugin>
                 <groupId>com.googlecode.maven-download-plugin</groupId>
@@ -171,7 +166,8 @@
                     </execution>
                 </executions>
             </plugin>
-            
+             -->
+            <!-- END Documentacion  -->
 
              
         </plugins>

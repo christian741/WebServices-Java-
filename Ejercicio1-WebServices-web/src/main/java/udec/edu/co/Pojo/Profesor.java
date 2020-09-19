@@ -7,7 +7,7 @@ package udec.edu.co.Pojo;
 
 import java.io.Serializable;
 import java.util.List;
-import org.eclipse.microprofile.openapi.annotations.media.Schema;
+
 
 
 /**
@@ -15,19 +15,19 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
  * @author Christian y Cristian
  */
 
-@Schema(name = "Profesor", description = "POJO que representa el profesor")
+
 public class Profesor implements Serializable {
 
     private static final long serialVersionUID=-1L;
-    @Schema(required = true)
+   
     private long cedula;
-    @Schema(required = true)
+    
     private String nombre;
-    @Schema(required = true)
+    
     private String apellido;
-    @Schema(required = true)
+    
     private int edad;
-    @Schema(required = true)
+   
     private List<String> listaMateria;
 
 

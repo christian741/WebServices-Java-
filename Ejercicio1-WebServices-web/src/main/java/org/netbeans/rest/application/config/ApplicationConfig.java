@@ -29,12 +29,10 @@ public class ApplicationConfig extends Application {
      * If required, comment out calling this method in getClasses().
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
-        
         resources.add(udec.edu.co.Controller.ProfesorController.class);
         resources.add(udec.edu.co.Excepcion.ExcepcionFilter.class);
         resources.add(udec.edu.co.Excepcion.NulPointerExcepcionFilter.class);
         resources.add(udec.edu.co.Excepcion.ObjectNotFoundExcepcionFilter.class);
-        
     }
     
 }
