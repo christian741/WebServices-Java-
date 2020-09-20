@@ -39,12 +39,18 @@ public class ProfesorService {
 
         boolean validacion = true;
         //devuelve todos
+        if (profesor.size() > 10) {
+            throw new ObjectNotFoundException("Mas de 10 objetos insertados");
+        }
+        if (profesor.size() <= 0) {
+            throw new ObjectNotFoundException("Viene Vacio");
+        }
         if (fichero.exists()) {
             System.out.println("si existe---------------------------");
             ArrayList<Profesor> busqueda = retornarProfesores();
             //no mas de 10 objetos
             if (profesor.size() > 10) {
-                throw new NullPointerException("Mas de 10 objetos insertados");
+                throw new ObjectNotFoundException("Mas de 10 objetos insertados");
             }
 
             for (int i = 0; i < busqueda.size(); i++) {
@@ -61,13 +67,13 @@ public class ProfesorService {
             throw new NullPointerException("Error hay una cedula repetida");
         } else {
             try {
-                // A partir del objeto File creamos el fichero físicamente
-                if (fichero.createNewFile()) {
-                    System.out.println("El fichero se ha creado correctamente");
-                } else {
-                    System.out.println("No ha podido ser creado el fichero");
+                if (!fichero.exists()) {// A partir del objeto File creamos el fichero físicamente
+                    if (fichero.createNewFile()) {
+                        System.out.println("El fichero se ha creado correctamente");
+                    } else {
+                        System.out.println("No ha podido ser creado el fichero");
+                    }
                 }
-
                 if (fichero.exists()) {
 
                     ArrayList<Profesor> arrayProfesores = new ArrayList<>();
@@ -95,22 +101,25 @@ public class ProfesorService {
                                 throw new ClassNotFoundException(ex + "Error no se encontro clase en el archivo");
                             }
                         } else {
-                            ObjectInput input = new ObjectInputStream(new FileInputStream(fichero));
+                            if (file.read() == 0) {
+                                System.out.println("aqui");
+                                ObjectInput input = new ObjectInputStream(new FileInputStream(fichero));
 
-                            try {
-                                
-                                arrayProfesores = (ArrayList<Profesor>) input.readObject();
-                               
-                                if (arrayProfesores != null) {
-                                    for (Profesor arrayProfesore : arrayProfesores) {
-                                        profesor.add(arrayProfesore);
+                                try {
+
+                                    arrayProfesores = (ArrayList<Profesor>) input.readObject();
+
+                                    if (arrayProfesores != null) {
+                                        for (Profesor arrayProfesore : arrayProfesores) {
+                                            profesor.add(arrayProfesore);
+                                        }
+
                                     }
-
+                                    input.close();
+                                } catch (ClassNotFoundException ex) {
+                                    System.out.println(ex);
+                                    throw new ClassNotFoundException(ex + "Error no se encontro clase en el archivo");
                                 }
-                                input.close();
-                            } catch (ClassNotFoundException ex) {
-                                System.out.println(ex);
-                                throw new ClassNotFoundException(ex + "Error no se encontro clase en el archivo");
                             }
                         }
 
@@ -138,12 +147,12 @@ public class ProfesorService {
         return new ErrorWraper("Creado Satisfactoriamente", "201", "Created");
     }
 
-    public void editarProfesor(Profesor profesor) {
+    public ErrorWraper editarProfesor(Profesor profesor) throws ObjectNotFoundException, ClassNotFoundException, IOException {
 
         ArrayList<Profesor> arrayProfesores = new ArrayList<>();
 
         if (this.validarCedula((long) profesor.getCedula()) == false) {
-            System.out.println("no se encokntro la cedula");
+            throw new ObjectNotFoundException("No se encontro la cedula");
         } else {
             if (fichero.exists()) {
                 try {
@@ -157,7 +166,7 @@ public class ProfesorService {
                         arrayProfesores = (ArrayList<Profesor>) input.readObject();
 
                     } catch (ClassNotFoundException ex) {
-                        System.out.println("error al buscar en ex");
+                        throw new ClassNotFoundException(ex + "Error no se encontro clase en el archivo");
                     }
                     input.close();
                     Profesor editado = new Profesor();
@@ -178,15 +187,20 @@ public class ProfesorService {
 
                 } catch (IOException ex) {
                     System.out.println("error" + ex);
+                    throw new IOException(ex + "Error en crear el archivo");
                 }
 
             }
         }
+        return new ErrorWraper("Modificado Satisfactoriamente", "200", "OK");
     }
 
-    public ArrayList<Profesor> retornarProfesores() {
+    public ArrayList<Profesor> retornarProfesores() throws IOException, ClassNotFoundException, ObjectNotFoundException {
         ArrayList<Profesor> arrayProfesores = new ArrayList<>();
         if (fichero.exists()) {
+            if (fichero.length() == 0) {
+                throw new ObjectNotFoundException("No se encontro Archivo");
+            }
             try {
                 //ObjectInputStream leyendoFichero = new ObjectInputStream(new FileInputStream(ruta));
                 InputStream file = new FileInputStream(ruta);
@@ -199,22 +213,29 @@ public class ProfesorService {
 
                 } catch (ClassNotFoundException ex) {
                     System.out.println("error al buscar en ex");
+                    throw new ClassNotFoundException(ex + "Error no se encontro clase en el archivo");
                 }
                 input.close();
 
             } catch (IOException ex) {
                 System.out.println("error" + ex);
+                throw new IOException(ex + "Error en crear el archivo");
             }
 
+        } else {
+            throw new ObjectNotFoundException("No se encontro Archivo");
         }
 
         return arrayProfesores;
     }
 
-    public Profesor retornarProfesorPorCedula(long cedula) {
+    public Profesor retornarProfesorPorCedula(long cedula) throws IOException, ObjectNotFoundException, ClassNotFoundException {
         ArrayList<Profesor> arrayProfesores = new ArrayList<>();
         Profesor profesor = new Profesor();
         if (fichero.exists()) {
+            if (fichero.length() == 0) {
+                throw new ObjectNotFoundException("No se encontro  datos en el Archivo");
+            }
             try {
                 //ObjectInputStream leyendoFichero = new ObjectInputStream(new FileInputStream(ruta));
                 InputStream file = new FileInputStream(ruta);
@@ -226,31 +247,41 @@ public class ProfesorService {
                     arrayProfesores = (ArrayList<Profesor>) input.readObject();
 
                 } catch (ClassNotFoundException ex) {
-                    System.out.println("error al buscar en ex");
+                    System.out.println("error al buscar en ex" + ex);
+                    throw new ClassNotFoundException(ex + "Error no se encontro clase en el archivo");
                 }
                 input.close();
-                boolean validar;
+                boolean validar = false;
                 for (Profesor arrayProfesore : arrayProfesores) {
                     if (arrayProfesore.getCedula() == cedula) {
+                        validar = true;
                         return arrayProfesore;
                     }
                 }
-                return null;
+                if (validar == false) {
+                    throw new ObjectNotFoundException("No se encontro la cedula");
+                }
 
             } catch (IOException ex) {
                 System.out.println("error" + ex);
+                throw new IOException(ex + "Error en crear el archivo");
             }
 
+        } else {
+            throw new ObjectNotFoundException("No se encontro Archivo");
         }
 
         return profesor;
     }
 
-    public ArrayList<Profesor> buscarProfesoresMateria(String materias) {
+    public ArrayList<Profesor> buscarProfesoresMateria(String materias) throws ObjectNotFoundException, IOException, ClassNotFoundException {
         String accion = "no realizado";
         ArrayList<Profesor> arrayProfesores = new ArrayList<>();
         ArrayList<Profesor> listaProfesor = new ArrayList<>();
         if (fichero.exists()) {
+            if (fichero.length() == 0) {
+                throw new ObjectNotFoundException("No se encontro Archivo");
+            }
             try {
                 //ObjectInputStream leyendoFichero = new ObjectInputStream(new FileInputStream(ruta));
                 InputStream file = new FileInputStream(ruta);
@@ -262,7 +293,8 @@ public class ProfesorService {
                     arrayProfesores = (ArrayList<Profesor>) input.readObject();
 
                 } catch (ClassNotFoundException ex) {
-                    System.out.println("error al buscar en ex");
+                    System.out.println("error al buscar en ex" + ex);
+                    throw new ClassNotFoundException(ex + "Error no se encontro clase en el archivo");
                 }
                 input.close();
 
@@ -281,23 +313,34 @@ public class ProfesorService {
 
                 }
 
+                if (listaProfesor.isEmpty()) {
+                    throw new ObjectNotFoundException("No se encontraron Profesores con esta materia");
+                }
+
             } catch (IOException ex) {
                 System.out.println("error" + ex);
+                throw new IOException(ex + "Error en crear el archivo");
             }
 
+        } else {
+            throw new ObjectNotFoundException("No se encontro Archivo");
         }
 
         return listaProfesor;
     }
 
-    public String eliminarProfesor(long cedula) {
+    public ErrorWraper eliminarProfesor(long cedula) throws ObjectNotFoundException, ClassNotFoundException, IOException {
         String accion = "no realizado";
         ArrayList<Profesor> arrayProfesores = new ArrayList<>();
         Profesor profesor = new Profesor();
         if (this.validarCedula(cedula) == false) {
             System.out.println("no se encokntro la cedula");
+            throw new ObjectNotFoundException("No se encontro la cedula");
         } else {
             if (fichero.exists()) {
+                if (fichero.length() == 0) {
+                    throw new ObjectNotFoundException("No se encontro Archivo");
+                }
                 try {
                     //ObjectInputStream leyendoFichero = new ObjectInputStream(new FileInputStream(ruta));
                     InputStream file = new FileInputStream(ruta);
@@ -309,14 +352,14 @@ public class ProfesorService {
                         arrayProfesores = (ArrayList<Profesor>) input.readObject();
 
                     } catch (ClassNotFoundException ex) {
-                        System.out.println("error al buscar en ex");
+                        System.out.println("error al buscar en ex" + ex);
+                        throw new ClassNotFoundException(ex + "Error no se encontro clase en el archivo");
                     }
                     input.close();
                     boolean encontrado = false;
                     Profesor eliminado = new Profesor();
                     for (Profesor arrayProfesore : arrayProfesores) {
                         if (arrayProfesore.getCedula() == cedula) {
-                            accion = " realizado";
                             encontrado = true;
                             System.out.println("encontrado");
                             eliminado = arrayProfesore;
@@ -326,21 +369,32 @@ public class ProfesorService {
                     if (encontrado == true) {
                         arrayProfesores.remove(eliminado);
                     }
-                    this.reconstruirArchivo(arrayProfesores);
+                    if (encontrado == false) {
+                        throw new ObjectNotFoundException("No se encontro el Profesor");
+                    }
+                    System.out.println("estoy aqui eliminar");
+                    if (this.reconstruirArchivo(arrayProfesores)) {
+                       return new ErrorWraper("Eliminado satisfactoriamente", "204", "No content");
+                    }
+                    System.out.println("me fui");
 
                 } catch (IOException ex) {
                     System.out.println("error" + ex);
+                    throw new IOException(ex + "Error en crear el archivo");
                 }
 
             }
         }
-        return accion;
+        return new ErrorWraper("Eliminado satisfactoriamente", "204", "No content");
+       
+        
     }
 
-    private void reconstruirArchivo(ArrayList<Profesor> lista) {
+    private boolean reconstruirArchivo(ArrayList<Profesor> lista) {
         boolean cambiar = false;
-
-        fichero.delete();
+        if (fichero.exists()) {
+            fichero.delete();
+        }
         try {
             // A partir del objeto File creamos el fichero físicamente
             if (fichero.createNewFile()) {
@@ -350,6 +404,7 @@ public class ProfesorService {
             }
 
             if (fichero.exists()) {
+                System.out.println("cambiando");
 
                 OutputStream file = new FileOutputStream(ruta);
                 OutputStream buffer = new BufferedOutputStream(file);
@@ -357,14 +412,20 @@ public class ProfesorService {
                 //ObjectOutputStream escribirFichero = new ObjectOutputStream(new FileOutputStream(ruta));
                 output.writeObject(lista);
                 output.close();
+                cambiar = true;
+            } else {
+                System.out.println("no cambio");
             }
         } catch (IOException ioe) {
             System.out.println(ioe);
+
         }
+        cambiar = true;
+        return cambiar;
 
     }
 
-    private boolean validarCedula(long cedula) {
+    private boolean validarCedula(long cedula) throws ObjectNotFoundException {
         boolean cedulaEncontrada = false;
         ArrayList<Profesor> arrayProfesores = new ArrayList<>();
         Profesor profesor = new Profesor();
@@ -394,6 +455,8 @@ public class ProfesorService {
                 System.out.println("error" + ex);
             }
 
+        } else {
+            throw new ObjectNotFoundException("No se encontro Archivo");
         }
 
         return cedulaEncontrada;

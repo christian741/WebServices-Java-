@@ -36,8 +36,11 @@ public class ApplicationConfig extends Application {
         resources.add(udec.edu.co.Excepcion.ExcepcionFilter.class);
         resources.add(udec.edu.co.Excepcion.IOExceptionFilter.class);
         resources.add(udec.edu.co.Excepcion.IllegalArgumentExceptionFilter.class);
+        resources.add(udec.edu.co.Excepcion.NotFoundExceptionFilter.class);
         resources.add(udec.edu.co.Excepcion.NulPointerExcepcionFilter.class);
         resources.add(udec.edu.co.Excepcion.ObjectNotFoundExcepcionFilter.class);
+        resources.add(udec.edu.co.Excepcion.ProcessingExceptionFilter.class);
+        resources.add(udec.edu.co.Excepcion.ServletExceptionFilter.class);
     }
     
 }
