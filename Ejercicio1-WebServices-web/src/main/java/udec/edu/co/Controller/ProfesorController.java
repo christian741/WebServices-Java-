@@ -8,8 +8,7 @@ package udec.edu.co.Controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.servlet.ServletException;
-import javax.ws.rs.ProcessingException;
+
 import javax.ejb.ObjectNotFoundException;
 import javax.ejb.Stateless;
 import javax.validation.Valid;
@@ -39,7 +38,7 @@ public class ProfesorController {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response insertarProfesor(ArrayList<Profesor> profesor) throws IOException, ObjectNotFoundException, Exception , ProcessingException ,IllegalArgumentException , ServletException{
+    public Response insertarProfesor(ArrayList<Profesor> profesor) throws IOException, ObjectNotFoundException, Exception  ,IllegalArgumentException {
         ProfesorService service = new ProfesorService();
         ErrorWraper mensaje = service.insertarProfesor(profesor);
         return Response.status(Response.Status.CREATED).entity(mensaje).build();
@@ -53,7 +52,7 @@ public class ProfesorController {
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response editar(Profesor profesor) throws ObjectNotFoundException, ClassNotFoundException, IOException , Exception , ProcessingException {
+    public Response editar(Profesor profesor) throws ObjectNotFoundException, ClassNotFoundException, IOException , Exception  {
         System.out.println(profesor.getCedula() + " " + profesor.getNombre());
         ProfesorService service = new ProfesorService();
         ErrorWraper mensaje = service.editarProfesor(profesor);
@@ -63,7 +62,7 @@ public class ProfesorController {
     @Path("/retornarPorCedula/{cedula}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response retornarProfesorPorCedula(@PathParam("cedula") long cedula) throws IOException, ObjectNotFoundException, ClassNotFoundException , ProcessingException , Exception {
+    public Response retornarProfesorPorCedula(@PathParam("cedula") long cedula) throws IOException, ObjectNotFoundException, ClassNotFoundException , Exception {
 
         ProfesorService service = new ProfesorService();
         Profesor Profesor = service.retornarProfesorPorCedula(cedula);
@@ -75,7 +74,7 @@ public class ProfesorController {
     @Path("/retornarMateria/{materia}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response retornarProfesorPorMateria(@PathParam("materia") String materia) throws ObjectNotFoundException, IOException, ClassNotFoundException ,ProcessingException , Exception{
+    public Response retornarProfesorPorMateria(@PathParam("materia") String materia) throws ObjectNotFoundException, IOException, ClassNotFoundException  , Exception{
 
         ProfesorService service = new ProfesorService();
          System.out.println(materia);
@@ -88,7 +87,7 @@ public class ProfesorController {
     @Path("/retornarTodos")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response retornarProfesor() throws IOException, ClassNotFoundException, ObjectNotFoundException , Exception , IllegalArgumentException ,ProcessingException , Exception {
+    public Response retornarProfesor() throws IOException, ClassNotFoundException, ObjectNotFoundException , Exception , IllegalArgumentException  , Exception {
         
         ProfesorService service = new ProfesorService();
         ArrayList<Profesor> lista = service.retornarProfesores();
@@ -101,7 +100,7 @@ public class ProfesorController {
     @Path("eliminar/{cedula}")
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
-    public Response eliminar(@PathParam("cedula") long cedula) throws ObjectNotFoundException, ClassNotFoundException, IOException ,ProcessingException , Exception{
+    public Response eliminar(@PathParam("cedula") long cedula) throws ObjectNotFoundException, ClassNotFoundException, IOException , Exception{
         //Lógica de base de datos
         ProfesorService service = new ProfesorService();
         ErrorWraper error = service.eliminarProfesor(cedula);

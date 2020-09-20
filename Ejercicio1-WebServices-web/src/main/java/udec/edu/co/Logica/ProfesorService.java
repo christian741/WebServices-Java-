@@ -30,11 +30,14 @@ import udec.edu.co.Pojo.Profesor;
  *
  * @author Christian
  */
+/**
+ * 
+ */
 public class ProfesorService {
 
     private String ruta = "C:/Users/Christian/Desktop/fichero.dat";
     private File fichero = new File(ruta);
-
+    
     public ErrorWraper insertarProfesor(ArrayList<Profesor> profesor) throws ObjectNotFoundException, NullPointerException, Exception {
 
         boolean validacion = true;
@@ -42,7 +45,7 @@ public class ProfesorService {
         if (profesor.size() > 10) {
             throw new ObjectNotFoundException("Mas de 10 objetos insertados");
         }
-        if (profesor.size() <= 0) {
+        if (profesor.size() <= 0 || profesor==null) {
             throw new ObjectNotFoundException("Viene Vacio");
         }
         if (fichero.exists()) {
@@ -83,7 +86,7 @@ public class ProfesorService {
                         InputStream file = new FileInputStream(ruta);
                         InputStream buffer = new BufferedInputStream(file);
                         if (file.read() == 0) {
-                            ObjectInput input = new ObjectInputStream(buffer);
+                            /*ObjectInput input = new ObjectInputStream(buffer);
 
                             try {
                                 System.out.println("aqui llegue2");
@@ -99,9 +102,9 @@ public class ProfesorService {
                             } catch (ClassNotFoundException ex) {
                                 System.out.println(ex);
                                 throw new ClassNotFoundException(ex + "Error no se encontro clase en el archivo");
-                            }
+                            }*/
                         } else {
-                            if (file.read() == 0) {
+                            //if (file.read() == 0) {
                                 System.out.println("aqui");
                                 ObjectInput input = new ObjectInputStream(new FileInputStream(fichero));
 
@@ -120,7 +123,7 @@ public class ProfesorService {
                                     System.out.println(ex);
                                     throw new ClassNotFoundException(ex + "Error no se encontro clase en el archivo");
                                 }
-                            }
+                            //}
                         }
 
                     } catch (EOFException ex) {
