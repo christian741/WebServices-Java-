@@ -20,9 +20,12 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.ObjectNotFoundException;
+import javax.validation.ConstraintViolationException;
+import udec.edu.co.Excepcion.ConstrainsVioletionfilter;
 import udec.edu.co.Pojo.ErrorWraper;
 import udec.edu.co.Pojo.Profesor;
 
@@ -31,25 +34,36 @@ import udec.edu.co.Pojo.Profesor;
  * @author Christian
  */
 /**
- * 
+ *
  */
 public class ProfesorService {
 
     private String ruta = "C:/Users/Christian/Desktop/fichero.dat";
     private File fichero = new File(ruta);
-    
+
     public ErrorWraper insertarProfesor(ArrayList<Profesor> profesor) throws ObjectNotFoundException, NullPointerException, Exception {
 
         boolean validacion = true;
+        boolean datos = true;
         //devuelve todos
         if (profesor.size() > 10) {
             throw new ObjectNotFoundException("Mas de 10 objetos insertados");
         }
-        if (profesor.size() <= 0 || profesor==null) {
+        if (profesor.size() <= 0 || profesor == null) {
             throw new ObjectNotFoundException("Viene Vacio");
         }
         if (fichero.exists()) {
             System.out.println("si existe---------------------------");
+             for (int j = 0; j < profesor.size(); j++) {
+                if (profesor.get(j).getCedula() == 0 || profesor.get(j).getNombre() == null || profesor.get(j).getApellido() == null || profesor.get(j).getEdad() == 0 || profesor.get(j).getListaMateria().isEmpty()) {
+                    System.out.println(profesor.get(j).getCedula());
+                    System.out.println(profesor.get(j).getNombre());
+                    System.out.println(profesor.get(j).getApellido());
+                    System.out.println(profesor.get(j).getEdad());
+                    System.out.println(profesor.get(j).getListaMateria());
+                    datos = false;
+                }
+            }
             ArrayList<Profesor> busqueda = retornarProfesores();
             //no mas de 10 objetos
             if (profesor.size() > 10) {
@@ -63,6 +77,13 @@ public class ProfesorService {
                     }
                 }
             }
+
+           
+
+            if (datos == false) {
+                throw new ConstraintViolationException("Datos erroneos", null);
+            }
+
         } else {
             validacion = true;
         }
@@ -88,10 +109,30 @@ public class ProfesorService {
                         if (file.read() == 0) {
                             /*ObjectInput input = new ObjectInputStream(buffer);
 
+                             try {
+                             System.out.println("aqui llegue2");
+                             arrayProfesores = (ArrayList<Profesor>) input.readObject();
+                             System.out.println("aqui llegue3");
+                             if (arrayProfesores != null) {
+                             for (Profesor arrayProfesore : arrayProfesores) {
+                             profesor.add(arrayProfesore);
+                             }
+
+                             }
+                             input.close();
+                             } catch (ClassNotFoundException ex) {
+                             System.out.println(ex);
+                             throw new ClassNotFoundException(ex + "Error no se encontro clase en el archivo");
+                             }*/
+                        } else {
+                            //if (file.read() == 0) {
+                            System.out.println("aqui");
+                            ObjectInput input = new ObjectInputStream(new FileInputStream(fichero));
+
                             try {
-                                System.out.println("aqui llegue2");
+
                                 arrayProfesores = (ArrayList<Profesor>) input.readObject();
-                                System.out.println("aqui llegue3");
+
                                 if (arrayProfesores != null) {
                                     for (Profesor arrayProfesore : arrayProfesores) {
                                         profesor.add(arrayProfesore);
@@ -102,27 +143,7 @@ public class ProfesorService {
                             } catch (ClassNotFoundException ex) {
                                 System.out.println(ex);
                                 throw new ClassNotFoundException(ex + "Error no se encontro clase en el archivo");
-                            }*/
-                        } else {
-                            //if (file.read() == 0) {
-                                System.out.println("aqui");
-                                ObjectInput input = new ObjectInputStream(new FileInputStream(fichero));
-
-                                try {
-
-                                    arrayProfesores = (ArrayList<Profesor>) input.readObject();
-
-                                    if (arrayProfesores != null) {
-                                        for (Profesor arrayProfesore : arrayProfesores) {
-                                            profesor.add(arrayProfesore);
-                                        }
-
-                                    }
-                                    input.close();
-                                } catch (ClassNotFoundException ex) {
-                                    System.out.println(ex);
-                                    throw new ClassNotFoundException(ex + "Error no se encontro clase en el archivo");
-                                }
+                            }
                             //}
                         }
 
@@ -377,7 +398,7 @@ public class ProfesorService {
                     }
                     System.out.println("estoy aqui eliminar");
                     if (this.reconstruirArchivo(arrayProfesores)) {
-                       return new ErrorWraper("Eliminado satisfactoriamente", "204", "No content");
+                        return new ErrorWraper("Eliminado satisfactoriamente", "204", "No content");
                     }
                     System.out.println("me fui");
 
@@ -389,8 +410,7 @@ public class ProfesorService {
             }
         }
         return new ErrorWraper("Eliminado satisfactoriamente", "204", "No content");
-       
-        
+
     }
 
     private boolean reconstruirArchivo(ArrayList<Profesor> lista) {

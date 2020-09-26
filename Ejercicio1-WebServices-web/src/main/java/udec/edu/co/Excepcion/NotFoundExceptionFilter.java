@@ -20,8 +20,8 @@ public class NotFoundExceptionFilter implements ExceptionMapper<NotFoundExceptio
 
     @Override
     public Response toResponse(NotFoundException exception) {
-       ErrorWraper error = new ErrorWraper(exception.getMessage(),"400" , "Bad Request");
-       return Response.status(Response.Status.BAD_REQUEST).entity(error).build();
+       ErrorWraper error = new ErrorWraper(exception.getMessage(),"404" , "Not Found");
+       return Response.status(Response.Status.NOT_FOUND).entity(error).build();
     }
     
 }

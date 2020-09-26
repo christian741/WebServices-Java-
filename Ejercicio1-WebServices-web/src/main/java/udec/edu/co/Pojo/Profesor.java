@@ -7,30 +7,28 @@ package udec.edu.co.Pojo;
 
 import java.io.Serializable;
 import java.util.List;
-
-
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  *
  * @author Christian y Cristian
  */
-
-
 public class Profesor implements Serializable {
 
-    private static final long serialVersionUID=-1L;
-   
+    private static final long serialVersionUID = -1L;
+    @NotNull(message = "Campo requerido")
     private long cedula;
-    
+    @NotNull
+    @Size(max = 25)
     private String nombre;
-    
+    @NotNull(message = "Campo requerido")
+    @Size(max = 25)
     private String apellido;
-    
+    @NotNull(message = "Campo requerido")
     private int edad;
    
     private List<String> listaMateria;
-
-
 
     public Profesor() {
 
@@ -43,13 +41,12 @@ public class Profesor implements Serializable {
         this.edad = edad;
     }
 
-    
     public Profesor(long cedula, String nombre, String apellido, int edad, List<String> listaMateria) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.edad = edad;
         this.listaMateria = listaMateria;
-     
+
     }
 
     public long getCedula() {
@@ -91,7 +88,5 @@ public class Profesor implements Serializable {
     public void setListaMateria(List<String> listaMateria) {
         this.listaMateria = listaMateria;
     }
-
-   
 
 }

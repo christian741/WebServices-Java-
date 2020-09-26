@@ -11,7 +11,9 @@ import java.util.List;
 
 import javax.ejb.ObjectNotFoundException;
 import javax.ejb.Stateless;
+import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -52,10 +54,11 @@ public class ProfesorController {
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response editar(Profesor profesor) throws ObjectNotFoundException, ClassNotFoundException, IOException , Exception  {
+    public Response editar(@Valid Profesor profesor) throws ObjectNotFoundException, ClassNotFoundException, IOException , Exception ,ConstraintViolationException {
         System.out.println(profesor.getCedula() + " " + profesor.getNombre());
         ProfesorService service = new ProfesorService();
         ErrorWraper mensaje = service.editarProfesor(profesor);
+        
         return Response.status(Response.Status.OK).entity(mensaje).build();
     }
 
