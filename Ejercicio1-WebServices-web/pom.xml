@@ -36,13 +36,7 @@
         </dependency>
         <!-- end servicios -->
         
-        <!-- Postgres SQL-->
-        <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>9.4-1204-jdbc41</version>
-        </dependency>
+       
         <!-- end PostgresSql -->
         
        
