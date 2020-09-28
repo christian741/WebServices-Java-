@@ -21,7 +21,13 @@
     
     <dependencies>
         <!-- Dependencias normales para servicios -->
-        
+       
+        <dependency>
+            <groupId>udec.edu.co</groupId>
+            <artifactId>Ejercicio1-WebServices-ejb</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <type>jar</type>
+        </dependency>
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-web-api</artifactId>

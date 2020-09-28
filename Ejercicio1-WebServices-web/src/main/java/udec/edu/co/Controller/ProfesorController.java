@@ -8,6 +8,7 @@ package udec.edu.co.Controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.ejb.EJB;
 
 import javax.ejb.ObjectNotFoundException;
 import javax.ejb.Stateless;
@@ -24,9 +25,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import udec.edu.co.Logica.ProfesorService;
+
 import udec.edu.co.Pojo.ErrorWraper;
 import udec.edu.co.Pojo.Profesor;
+import udec.edu.co.Service.IProfesorService;
 
 /**
  *
@@ -36,38 +38,39 @@ import udec.edu.co.Pojo.Profesor;
 @Path("/profesores")
 public class ProfesorController {
 
+    @EJB
+    private IProfesorService service;
+
     @Path("/insertar")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response insertarProfesor(ArrayList<Profesor> profesor) throws IOException, ObjectNotFoundException, Exception  ,IllegalArgumentException {
-        ProfesorService service = new ProfesorService();
+    public Response insertarProfesor(ArrayList<Profesor> profesor) throws IOException, ObjectNotFoundException, Exception, IllegalArgumentException {
+
         ErrorWraper mensaje = service.insertarProfesor(profesor);
         return Response.status(Response.Status.CREATED).entity(mensaje).build();
         //201 create si esta bien
         //mal 404
         //base datos 500
-        
+
     }
 
     @Path("/editar")
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response editar(@Valid Profesor profesor) throws ObjectNotFoundException, ClassNotFoundException, IOException , Exception ,ConstraintViolationException {
+    public Response editar(@Valid Profesor profesor) throws ObjectNotFoundException, ClassNotFoundException, IOException, Exception, ConstraintViolationException {
         System.out.println(profesor.getCedula() + " " + profesor.getNombre());
-        ProfesorService service = new ProfesorService();
         ErrorWraper mensaje = service.editarProfesor(profesor);
-        
+
         return Response.status(Response.Status.OK).entity(mensaje).build();
     }
 
     @Path("/retornarPorCedula/{cedula}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response retornarProfesorPorCedula(@PathParam("cedula") long cedula) throws IOException, ObjectNotFoundException, ClassNotFoundException , Exception {
+    public Response retornarProfesorPorCedula(@PathParam("cedula") long cedula) throws IOException, ObjectNotFoundException, ClassNotFoundException, Exception {
 
-        ProfesorService service = new ProfesorService();
         Profesor Profesor = service.retornarProfesorPorCedula(cedula);
         return Response.status(Response.Status.OK).entity(Profesor).build();
         //filtros vacio no encontrado 404 
@@ -77,10 +80,9 @@ public class ProfesorController {
     @Path("/retornarMateria/{materia}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response retornarProfesorPorMateria(@PathParam("materia") String materia) throws ObjectNotFoundException, IOException, ClassNotFoundException  , Exception{
+    public Response retornarProfesorPorMateria(@PathParam("materia") String materia) throws ObjectNotFoundException, IOException, ClassNotFoundException, Exception {
 
-        ProfesorService service = new ProfesorService();
-         System.out.println(materia);
+        System.out.println(materia);
         ArrayList<Profesor> lista = service.buscarProfesoresMateria(materia);
         return Response.status(Response.Status.OK).entity(lista).build();
         //filtros vacio no encontrado 404 no content
@@ -90,31 +92,24 @@ public class ProfesorController {
     @Path("/retornarTodos")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response retornarProfesor() throws IOException, ClassNotFoundException, ObjectNotFoundException , Exception , IllegalArgumentException  , Exception {
-        
-        ProfesorService service = new ProfesorService();
+    public Response retornarProfesor() throws IOException, ClassNotFoundException, ObjectNotFoundException, Exception, IllegalArgumentException, Exception {
+
         ArrayList<Profesor> lista = service.retornarProfesores();
         return Response.status(Response.Status.OK).entity(lista).build();
         // vacia
 
     }
 
-
     @Path("eliminar/{cedula}")
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
-    public Response eliminar(@PathParam("cedula") long cedula) throws ObjectNotFoundException, ClassNotFoundException, IOException , Exception{
+    public Response eliminar(@PathParam("cedula") long cedula) throws ObjectNotFoundException, ClassNotFoundException, IOException, Exception {
         //Lógica de base de datos
-        ProfesorService service = new ProfesorService();
+
         ErrorWraper error = service.eliminarProfesor(cedula);
         return Response.status(Response.Status.NO_CONTENT).entity(error).build();
         //204 no content
         //404 not found
     }
 
-
-
-
-
 }
- 

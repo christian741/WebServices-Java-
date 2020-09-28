@@ -5,22 +5,23 @@
  */
 package udec.edu.co.Excepcion;
 
+import java.io.IOException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 import udec.edu.co.Pojo.ErrorWraper;
+
 
 /**
  *
  * @author Christian
  */
 @Provider
-public class ClassNotFoundExceptionFilter implements ExceptionMapper<ClassNotFoundException>{
-
+public class IOExceptionFilter implements ExceptionMapper<IOException>{
+    
     @Override
-    public Response toResponse(ClassNotFoundException exception) {
+    public Response toResponse(IOException exception) {
         ErrorWraper error = new ErrorWraper(exception.getMessage(),"500" , "INTERNAL_SERVER_ERROR");
        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(error).build();
     }
-    
 }

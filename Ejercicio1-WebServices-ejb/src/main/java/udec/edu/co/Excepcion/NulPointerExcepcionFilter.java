@@ -5,22 +5,26 @@
  */
 package udec.edu.co.Excepcion;
 
-import java.io.EOFException;
+import java.sql.Date;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 import udec.edu.co.Pojo.ErrorWraper;
+
 
 /**
  *
  * @author Christian
  */
 @Provider
-public class EOFExceptionFilter implements ExceptionMapper<EOFException>{
-
+public class NulPointerExcepcionFilter implements ExceptionMapper<NullPointerException>{
+    
+    private String error409 = "Mas de 10 objetos insertados";
+     private String error400 = "";
     @Override
-    public Response toResponse(EOFException exception) {
-         ErrorWraper error = new ErrorWraper(exception.getMessage(),"500" , "INTERNAL_SERVER_ERROR");
+    public Response toResponse(NullPointerException exception) {
+       ErrorWraper error = new ErrorWraper(exception.getMessage(),"500" , "INTERNAL_SERVER_ERROR");
+        
        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(error).build();
     }
     
