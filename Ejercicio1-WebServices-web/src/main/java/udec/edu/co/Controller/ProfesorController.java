@@ -30,6 +30,7 @@ import udec.edu.co.Pojo.ErrorWraper;
 import udec.edu.co.Pojo.Profesor;
 import udec.edu.co.Service.IProfesorService;
 
+
 /**
  *
  * @author Christian
@@ -40,6 +41,7 @@ public class ProfesorController {
 
     @EJB
     private IProfesorService service;
+
 
     @Path("/insertar")
     @POST

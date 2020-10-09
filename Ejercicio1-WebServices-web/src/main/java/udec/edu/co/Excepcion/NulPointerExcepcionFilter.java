@@ -20,7 +20,7 @@ import udec.edu.co.Pojo.ErrorWraper;
 public class NulPointerExcepcionFilter implements ExceptionMapper<NullPointerException>{
     
     private String error409 = "Mas de 10 objetos insertados";
-     private String error400 = "";
+    private String error400 = "";
     @Override
     public Response toResponse(NullPointerException exception) {
        ErrorWraper error = new ErrorWraper(exception.getMessage(),"500" , "INTERNAL_SERVER_ERROR");
